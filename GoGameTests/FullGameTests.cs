@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 
 namespace GoGameTests
@@ -132,7 +133,7 @@ namespace GoGameTests
         }
 
         [Test]
-        public void AddStone_SurroundOppositeColorStoneGroupOfSize2_RemoveOppositeColorStoneGroup()
+        public void AddStone_SurroundOppositeColorHorizontalStoneGroupOfSize2_RemoveOppositeColorStoneGroup()
         {
             Board board = MakeBoard();
 
@@ -143,9 +144,70 @@ namespace GoGameTests
             PositionStatus status1 = board.GetPositionStatus(2, 3);
             PositionStatus status2 = board.GetPositionStatus(3, 3);
 
-            Assert.AreEqual(PositionStatus.EmptyPosition, board.GetPositionStatus(2, 3));
-            Assert.AreEqual(PositionStatus.EmptyPosition, board.GetPositionStatus(3, 3));
+            Assert.AreEqual(PositionStatus.EmptyPosition, status1);
+            Assert.AreEqual(PositionStatus.EmptyPosition, status2);
         }
+
+        [Test]
+        public void AddStone_SurroundOppositeColorVeritcalStoneGroupOfSize2_RemoveOppositeColorStoneGroup()
+        {
+            Board board = MakeBoard();
+
+                                                              board.AddStoneToPosition(StoneColor.White, 2, 2);
+            board.AddStoneToPosition(StoneColor.White, 1, 3); board.AddStoneToPosition(StoneColor.Black, 2, 3); board.AddStoneToPosition(StoneColor.White, 3, 3);
+            board.AddStoneToPosition(StoneColor.White, 1, 4); board.AddStoneToPosition(StoneColor.Black, 2, 4); board.AddStoneToPosition(StoneColor.White, 3, 4);
+                                                              board.AddStoneToPosition(StoneColor.White, 2, 5);
+
+            PositionStatus status1 = board.GetPositionStatus(2, 3);
+            PositionStatus status2 = board.GetPositionStatus(2, 4);
+
+            Assert.AreEqual(PositionStatus.EmptyPosition, status1);
+            Assert.AreEqual(PositionStatus.EmptyPosition, status2);
+        }
+
+        // Surrounding White?
+
+        [Test]
+        public void AddStone_SurroundOppositeColorVeritcalStoneGroupOfSize3_RemoveOppositeColorStoneGroup()
+        {
+            Board board = MakeBoard();
+
+                                                              board.AddStoneToPosition(StoneColor.White, 2, 2);
+            board.AddStoneToPosition(StoneColor.White, 1, 3); board.AddStoneToPosition(StoneColor.Black, 2, 3); board.AddStoneToPosition(StoneColor.White, 3, 3);
+            board.AddStoneToPosition(StoneColor.White, 1, 4); board.AddStoneToPosition(StoneColor.Black, 2, 4); board.AddStoneToPosition(StoneColor.White, 3, 4);
+            board.AddStoneToPosition(StoneColor.White, 1, 5); board.AddStoneToPosition(StoneColor.Black, 2, 5); board.AddStoneToPosition(StoneColor.White, 3, 5);
+                                                              board.AddStoneToPosition(StoneColor.White, 2, 6);
+
+            PositionStatus status1 = board.GetPositionStatus(2, 3);
+            PositionStatus status2 = board.GetPositionStatus(2, 4);
+            PositionStatus status3 = board.GetPositionStatus(2, 5);
+
+            Assert.AreEqual(PositionStatus.EmptyPosition, status1);
+            Assert.AreEqual(PositionStatus.EmptyPosition, status2);
+            Assert.AreEqual(PositionStatus.EmptyPosition, status3);
+        }
+
+        [Test]
+        public void AddStone_SurroundOppositeColorLShapedStoneGroupOfSize3_RemoveOppositeColorStoneGroup()
+        {
+            Board board = MakeBoard();
+
+                                                              board.AddStoneToPosition(StoneColor.White, 2, 2);
+            board.AddStoneToPosition(StoneColor.White, 1, 3); board.AddStoneToPosition(StoneColor.Black, 2, 3); board.AddStoneToPosition(StoneColor.White, 3, 3);
+            board.AddStoneToPosition(StoneColor.White, 1, 4); board.AddStoneToPosition(StoneColor.Black, 2, 4); board.AddStoneToPosition(StoneColor.Black, 3, 4); board.AddStoneToPosition(StoneColor.White, 4, 4);
+                                                              board.AddStoneToPosition(StoneColor.White, 2, 5); board.AddStoneToPosition(StoneColor.White, 3, 5);
+
+
+            PositionStatus status1 = board.GetPositionStatus(2, 3);
+            PositionStatus status2 = board.GetPositionStatus(2, 4);
+            PositionStatus status3 = board.GetPositionStatus(3, 4);
+
+            Assert.AreEqual(PositionStatus.EmptyPosition, status1);
+            Assert.AreEqual(PositionStatus.EmptyPosition, status2);
+            Assert.AreEqual(PositionStatus.EmptyPosition, status3);
+        }
+
+
     }
 
     public enum StoneColor
@@ -192,24 +254,9 @@ namespace GoGameTests
 
         private void RemoveSurroundedStone(int x, int y)
         {
-            // Find all stones part of current position group
-            List<Tuple<int, int>> stoneGroup = new List<Tuple<int, int>>() { new Tuple<int, int>(x, y) };
+            var stoneGroup = GetStoneGroup(x, y);
 
-            if (x != 0 && positionStatusMatrix[x - 1, y] == PositionStatus.FilledPosition && stoneColorMatrix[x - 1, y] == stoneColorMatrix[x, y])
-            {
-                stoneGroup.Add(new Tuple<int, int>(x - 1, y));
-            }
-
-            if (positionStatusMatrix[x + 1, y] == PositionStatus.FilledPosition && stoneColorMatrix[x + 1, y] == stoneColorMatrix[x, y])
-            {
-                stoneGroup.Add(new Tuple<int, int>(x + 1, y));
-            }
-
-            bool hasEmptyNeighbor = false;
-            foreach (var stone in stoneGroup)
-            {
-                hasEmptyNeighbor = hasEmptyNeighbor || HasEmptyNeighbor(stone.Item1, stone.Item2);
-            }
+            var hasEmptyNeighbor = stoneGroup.Aggregate(false, (current, stone) => current || HasEmptyNeighbor(stone.Item1, stone.Item2));
 
             if (!hasEmptyNeighbor)
             {
@@ -218,6 +265,44 @@ namespace GoGameTests
                     positionStatusMatrix[stone.Item1, stone.Item2] = PositionStatus.EmptyPosition;
                 }
             }
+        }
+
+        private List<Tuple<int, int>> GetStoneGroup(int x, int y)
+        {
+            // Find all stones part of current position group
+            var stoneGroup = new List<Tuple<int, int>> {new Tuple<int, int>(x, y)};
+
+            for (int i = 0; i < stoneGroup.Count; i++)
+            {
+                var stoneX = stoneGroup[i].Item1;
+                var stoneY = stoneGroup[i].Item2;
+
+                if (stoneX != 0 && positionStatusMatrix[stoneX - 1, stoneY] == PositionStatus.FilledPosition &&
+                    stoneColorMatrix[stoneX - 1, stoneY] == stoneColorMatrix[stoneX, stoneY] && !stoneGroup.Contains(new Tuple<int, int>(stoneX -1, stoneY)))
+                {
+                    stoneGroup.Add(new Tuple<int, int>(stoneX - 1, stoneY));
+                }
+
+                if (positionStatusMatrix[stoneX + 1, stoneY] == PositionStatus.FilledPosition &&
+                    stoneColorMatrix[stoneX + 1, stoneY] == stoneColorMatrix[stoneX, stoneY] && !stoneGroup.Contains(new Tuple<int, int>(stoneX+1, stoneY)))
+                {
+                    stoneGroup.Add(new Tuple<int, int>(stoneX + 1, stoneY));
+                }
+
+                if (stoneY != 0 && positionStatusMatrix[stoneX, stoneY - 1] == PositionStatus.FilledPosition &&
+                    stoneColorMatrix[stoneX, stoneY - 1] == stoneColorMatrix[stoneX, stoneY] && !stoneGroup.Contains(new Tuple<int, int>(stoneX, stoneY-1)))
+                {
+                    stoneGroup.Add(new Tuple<int, int>(stoneX, stoneY - 1));
+                }
+
+                if (positionStatusMatrix[stoneX, stoneY + 1] == PositionStatus.FilledPosition &&
+                    stoneColorMatrix[stoneX, stoneY + 1] == stoneColorMatrix[stoneX, stoneY] && !stoneGroup.Contains(new Tuple<int, int>(stoneX, stoneY+1)))
+                {
+                    stoneGroup.Add(new Tuple<int, int>(stoneX, stoneY + 1));
+                }
+            }
+
+            return stoneGroup;
         }
 
         private bool HasEmptyNeighbor(int x, int y)
