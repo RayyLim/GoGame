@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace GoGameTests
@@ -115,6 +116,23 @@ namespace GoGameTests
 
             Assert.AreEqual(PositionStatus.EmptyPosition, status);
         }
+
+        //[Test]
+        //public void AddStone_SurroundOppositeColorStoneGroupOfSize2_RemoveOppositeColorStoneGroup()
+        //{
+        //    Board board = MakeBoard();
+
+        //                                                      board.AddStoneToPosition(StoneColor.White, 2, 2); board.AddStoneToPosition(StoneColor.White, 3, 2);
+        //    board.AddStoneToPosition(StoneColor.White, 1, 3); board.AddStoneToPosition(StoneColor.Black, 2, 3); board.AddStoneToPosition(StoneColor.Black, 3, 3); board.AddStoneToPosition(StoneColor.White, 4, 3);
+        //                                                      board.AddStoneToPosition(StoneColor.White, 2, 4);
+
+        //    board.AddStoneToPosition(StoneColor.White, 3, 4);
+        //    PositionStatus status1 = board.GetPositionStatus(2, 3);
+        //    PositionStatus status2 = board.GetPositionStatus(3, 3);
+
+        //    Assert.AreEqual(PositionStatus.EmptyPosition, board.GetPositionStatus(2, 3));
+        //    Assert.AreEqual(PositionStatus.EmptyPosition, board.GetPositionStatus(3, 3));
+        //}
     }
 
     public enum StoneColor
@@ -147,6 +165,7 @@ namespace GoGameTests
             positionStatusMatrix[x, y] = PositionStatus.FilledPosition;
             stoneColorMatrix[x, y] = stoneColor;
 
+
             CheckStonesAroundPositionAndRemoveIfNeeded(x, y);
         }
 
@@ -160,21 +179,47 @@ namespace GoGameTests
 
         private void RemoveSurroundedStone(int x, int y)
         {
-            bool surroundedOnLeft = (x==0 || stoneColorMatrix[x - 1, y] == StoneColor.White); 
-            bool surroundedOnRight = stoneColorMatrix[x+1, y] == StoneColor.White;
-            bool surroundedOnBottom = stoneColorMatrix[x, y + 1] == StoneColor.White;
-            bool surroundedOnTop = (y==0 || stoneColorMatrix[x, y-1] == StoneColor.White);
+            // Find all stones part of current position group
+            List<Tuple<int, int>> stoneGroup = new List<Tuple<int, int>>() { new Tuple<int, int>(x, y) };
 
-             
-                if ( surroundedOnLeft &&
-                    surroundedOnRight &&
-                    surroundedOnTop &&
-                    surroundedOnBottom)
+            bool emptyOnLeft = (x == 0 || positionStatusMatrix[x - 1, y] == PositionStatus.EmptyPosition);
+            bool emptyOnRight = positionStatusMatrix[x + 1, y] == PositionStatus.EmptyPosition;
+            bool emptyOnBottom = positionStatusMatrix[x, y + 1] == PositionStatus.EmptyPosition;
+            bool emptyOnTop = (y == 0 || positionStatusMatrix[x, y - 1] == PositionStatus.EmptyPosition);
+
+            if(x != 0 && positionStatusMatrix[x-1,y] == PositionStatus.FilledPosition && stoneColorMatrix[x-1,y] == stoneColorMatrix[x,y])
+            {
+                stoneGroup.Add(new Tuple<int, int>(x-1,y));
+            }
+
+            foreach(var stone in stoneGroup)
+            {
+                var hasEmptyNeighbor = HasEmptyNeighbor(stone.Item1, stone.Item2);
+
+                if (!hasEmptyNeighbor)
                 {
-                    positionStatusMatrix[x, y] = PositionStatus.EmptyPosition;
+                    positionStatusMatrix[stone.Item1, stone.Item2] = PositionStatus.EmptyPosition;
                 }
-            
+            }
 
+
+            //StoneColor currentColor = StoneColor.Black;
+            //if(!emptyOnRight && stoneColorMatrix[x-1,y] == currentColor)
+            //{
+            //    stoneGroup.Add(new Tuple<int, int>(x-1,y));
+            //}
+        }
+
+        private bool HasEmptyNeighbor(int x, int y)
+        {
+            // Check if there are empty positions around current position
+            bool emptyOnLeft = (x == 0 || positionStatusMatrix[x - 1, y] == PositionStatus.EmptyPosition);
+            bool emptyOnRight = positionStatusMatrix[x + 1, y] == PositionStatus.EmptyPosition;
+            bool emptyOnBottom = positionStatusMatrix[x, y + 1] == PositionStatus.EmptyPosition;
+            bool emptyOnTop = (y == 0 || positionStatusMatrix[x, y - 1] == PositionStatus.EmptyPosition);
+
+            bool hasEmptyNeighbor = emptyOnLeft || emptyOnRight || emptyOnBottom || emptyOnTop;
+            return hasEmptyNeighbor;
         }
     }
 }
