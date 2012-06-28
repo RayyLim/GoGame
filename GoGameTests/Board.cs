@@ -2,22 +2,24 @@ namespace GoGameTests
 {
     class Rules
     {
+        private const int EDGE = 2;
         private bool inKomiMode = true;
         private StoneColor currentWinner = StoneColor.White;
 
         public Board Board { get; set; }
         public bool IsFullySurroundedBy(int x, int y, StoneColor surroundingStoneColor)
         {
-            bool surroundedOnLeft = (x == 0 || Board.GetStoneColor(x - 1, y) == surroundingStoneColor);
-            bool surroundedOnRight = Board.GetStoneColor(x + 1, y) == surroundingStoneColor;
-            bool surroundedOnBottom = Board.GetStoneColor(x, y + 1) == surroundingStoneColor;
-            bool surroundedOnTop = (y == 0 || Board.GetStoneColor(x, y - 1) == surroundingStoneColor);
+            bool surroundedOnLeft = (x < EDGE || Board.GetStoneColor(x - 1, y) == surroundingStoneColor);
+            bool surroundedOnRight = (x > Board.BOARDSIZE - EDGE || Board.GetStoneColor(x + 1, y) == surroundingStoneColor);
+            bool surroundedOnBottom = (y > Board.BOARDSIZE - EDGE || Board.GetStoneColor(x, y + 1) == surroundingStoneColor);
+            bool surroundedOnTop = (y < EDGE || Board.GetStoneColor(x, y - 1) == surroundingStoneColor);
 
 
             bool fullySurrounded = surroundedOnLeft && surroundedOnRight && surroundedOnTop && surroundedOnBottom;
             return fullySurrounded;
         }
-
+        
+       
         public void CheckStonesAroundPositionAndRemoveIfNeeded(int x, int y)
         {
             Board.RemoveStoneIfSurrounded(x, y - 1);
@@ -33,11 +35,22 @@ namespace GoGameTests
                 return StoneColor.White;
             }
 
-            bool surrounded = IsFullySurroundedBy(1, 1, StoneColor.Black);
-            var color1 = Board.GetStoneColor(1, 2);
-            if (surrounded)
+            for (int i = 1; i < Board.BOARDSIZE; i++)
             {
-                return color1;
+                for (int j = 1; j < Board.BOARDSIZE; j++)
+                {
+                    if (IsFullySurroundedBy(i,j,StoneColor.White))
+                    {
+                        return StoneColor.White;
+                    }
+                    
+                    if (IsFullySurroundedBy(i,j,StoneColor.Black))
+                    {
+                        return StoneColor.Black;
+                    }
+
+                }
+                
             }
             return currentWinner;
         }
@@ -61,7 +74,7 @@ namespace GoGameTests
 
         }
 
-        private const int BOARDSIZE = 19;
+        public const int BOARDSIZE = 19;
 
         public PositionStatus GetPositionStatus(int x, int y)
         {
@@ -84,6 +97,7 @@ namespace GoGameTests
             if ( fullySurrounded)
             {
                 positionStatusMatrix[x, y] = PositionStatus.EmptyPosition;
+                
             }
         }
 

@@ -131,8 +131,8 @@ namespace GoGameTests
         {
             Board board = MakeBoard();
 
-            /*BLACK TRRITORRY HERE*/            board.AddStone(StoneColor.Black, 1,2);
-            board.AddStone(StoneColor.Black, 2,1);
+            /*BLACK TRRITORRY HERE*/            board.AddStone(StoneColor.Black, 2,1);
+            board.AddStone(StoneColor.Black, 1,2);
 
             StoneColor result = board.GetWinner();
 
@@ -144,8 +144,8 @@ namespace GoGameTests
         {
             Board board = MakeBoard();
 
-            /*BLACK TRRITORRY HERE*/            board.AddStone(StoneColor.Black, 1,2);
-            board.AddStone(StoneColor.Black, 2,1);
+            /*BLACK TRRITORRY HERE*/            board.AddStone(StoneColor.Black, 2,1);
+            board.AddStone(StoneColor.Black, 1,2);
             
             board.AddStone(StoneColor.White, 3,1);
             
@@ -153,12 +153,63 @@ namespace GoGameTests
 
             Assert.AreEqual(StoneColor.Black, result);
         }
+
+        [Test]
+        public void DetermineWinner_NotCornerCellWonForBlack_BlackWins()
+        {
+            Board board = MakeBoard();
+            
+                                                   board.AddStone(StoneColor.Black, 3, 1);
+            board.AddStone(StoneColor.Black, 2, 2); /* BLACK TERRITORY*/                   board.AddStone(StoneColor.Black, 4, 2);
+                                                   board.AddStone(StoneColor.Black, 3, 3);
+
+                                                   board.AddStone(StoneColor.White, 3, 4);
+
+            StoneColor result = board.GetWinner();
+
+            Assert.AreEqual(StoneColor.Black, result);
+        }
+        
+        
+        [Test]
+        public void DetermineWinner_NotCornerCellWonForWhite_WhiteWins()
+        {
+            Board board = MakeBoard();
+            
+                                                   board.AddStone(StoneColor.White, 3, 1);
+            board.AddStone(StoneColor.White, 2, 2); /* WHITE TERRITORY*/                   board.AddStone(StoneColor.White, 4, 2);
+                                                   board.AddStone(StoneColor.White, 3, 3);
+
+                                                   board.AddStone(StoneColor.Black, 3, 4);
+
+            StoneColor result = board.GetWinner();
+
+            Assert.AreEqual(StoneColor.White, result);
+        }
+
+        //TODO: remove assumption that removes stones only if they are surrounded in white
+
+        
+        [Test]
+        public void DetermineWinner_BlackDoesntOwnAnyCellButPlayedOnce_WhiteShouldWinByKomi()
+        {
+            Board board = MakeBoard();
+            
+             board.AddStone(StoneColor.Black, 3, 1);
+             board.AddStone(StoneColor.White, 3, 4);
+
+            StoneColor result = board.GetWinner();
+
+            Assert.AreEqual(StoneColor.White, result);
+        }
+
+
     }
 
     public enum StoneColor
     {
-        Black,
-        White,
+        Black=1,
+        White=2,
         Empty = 0
     }
 
