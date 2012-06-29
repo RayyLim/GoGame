@@ -344,6 +344,10 @@ namespace GoGameTests
             Assert.AreEqual(StoneColor.White, result);
         }
 
+        // What would happen if we make GetWinner, GetBlackPoints, and GetWhitePoints
+        // The responsibility of another class? i.e. EndGame endGame = new EndGame(board)
+        // where GetWinner will be EndGame(board).GetWinner();
+
         [Test]
         public void GetBlackPoints_BlackOwns2CellsButLoses1StoneToWhite_1()
         {
