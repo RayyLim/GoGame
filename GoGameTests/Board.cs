@@ -2,9 +2,7 @@ namespace GoGameTests
 {
     class Rules
     {
-        private const int EDGE = 2;
-        private bool inKomiMode = true;
-        private StoneColor currentWinner = StoneColor.White;
+        public const int EDGE = 2;
 
         public Board Board { get; set; }
         public bool IsFullySurroundedBy(int x, int y, StoneColor surroundingStoneColor)
@@ -28,38 +26,24 @@ namespace GoGameTests
             Board.RemoveStoneIfSurrounded(x + 1, y);
         }
 
+        public Rules(Board board)
+        {
+            Board = board;
+        }
+
         public StoneColor GetWinner()
         {
-            if (inKomiMode)
+            var result = new FirstCellWinnerStrategy(Board).GetWinner();
+            if (result!= StoneColor.Empty)
             {
-                return StoneColor.White;
+                return result;
             }
-
-            for (int i = 1; i < Board.BOARDSIZE; i++)
-            {
-                for (int j = 1; j < Board.BOARDSIZE; j++)
-                {
-                    if (IsFullySurroundedBy(i,j,StoneColor.White))
-                    {
-                        return StoneColor.White;
-                    }
-                    
-                    if (IsFullySurroundedBy(i,j,StoneColor.Black))
-                    {
-                        return StoneColor.Black;
-                    }
-
-                }
-                
-            }
-            return currentWinner;
+            return new KomiWinnerStrategy(Board).GetWinner();
         }
 
 
         public void NotifyStoneAdded(StoneColor stoneColor, int x, int y)
         {
-            inKomiMode = false;
-            currentWinner = stoneColor;
         }
     }
 
@@ -70,7 +54,7 @@ namespace GoGameTests
 
         public Board()
         {
-            rules = new Rules {Board = this};
+            rules = new Rules(this);
 
         }
 

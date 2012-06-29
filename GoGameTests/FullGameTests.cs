@@ -203,6 +203,8 @@ namespace GoGameTests
             Assert.AreEqual(StoneColor.White, result);
         }
 
+        // TODO: remove assumption that when no one own any territories, that the last player wins. The player that wins is White because of Komi.
+        // TODO: remove assumption that first surrounded territory found by the for loop is the winner.
 
     }
 
