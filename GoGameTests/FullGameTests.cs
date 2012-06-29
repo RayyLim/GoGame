@@ -127,6 +127,26 @@ namespace GoGameTests
         }
 
         [Test]
+        public void GetWhitePoints_ByDefaultBecauseOfKomi_HalfPoint()
+        {
+            Board board = MakeBoard();
+
+            var result = board.GetWhitePoints();
+
+            Assert.AreEqual(0.5, result);
+        }
+
+        [Test]
+        public void GetBlackPoints_ByDefault_0Points()
+        {
+            Board board = MakeBoard();
+
+            var result = board.GetBlackPoints();
+
+            Assert.AreEqual(0, result);
+        }
+
+        [Test]
         public void DetermineWinner_AtLeast1CellWonForBlack_BlackWins()
         {
             Board board = MakeBoard();
@@ -137,6 +157,19 @@ namespace GoGameTests
             StoneColor result = board.GetWinner();
 
             Assert.AreEqual(StoneColor.Black, result);
+        }
+
+        [Test]
+        public void GetBlackPoints_1CellWonForBlack_1()
+        {
+            Board board = MakeBoard();
+
+            /*BLACK TRRITORRY HERE*/            board.AddStone(StoneColor.Black, 2,1);
+            board.AddStone(StoneColor.Black, 1,2);
+
+            var result = board.GetBlackPoints();
+
+            Assert.AreEqual(1, result);
         }
         
         [Test]
@@ -169,6 +202,37 @@ namespace GoGameTests
 
             Assert.AreEqual(StoneColor.Black, result);
         }
+
+        [Test]
+        public void GetBlackPoints_NotCornerCellWonForBlack_1()
+        {
+            Board board = MakeBoard();
+            
+                                                   board.AddStone(StoneColor.Black, 3, 1);
+            board.AddStone(StoneColor.Black, 2, 2); /* BLACK TERRITORY*/                   board.AddStone(StoneColor.Black, 4, 2);
+                                                   board.AddStone(StoneColor.Black, 3, 3);
+
+            var result = board.GetBlackPoints();
+
+            Assert.AreEqual(1, result);
+        }
+
+        [Test]
+        public void GetBlackPoints_BlackOwn2Cells_2()
+        {
+            Board board = MakeBoard();
+
+                                                   board.AddStone(StoneColor.Black, 3, 1);
+            board.AddStone(StoneColor.Black, 2, 2); /* BLACK TERRITORY*/                   board.AddStone(StoneColor.Black, 4, 2);
+                                                   board.AddStone(StoneColor.Black, 3, 3);
+                                                   board.AddStone(StoneColor.Black, 3, 4);
+            board.AddStone(StoneColor.Black, 2, 5); /* BLACK TERRITORY*/                   board.AddStone(StoneColor.Black, 4, 5);
+                                                   board.AddStone(StoneColor.Black, 3, 6);
+
+            var result = board.GetBlackPoints();
+
+            Assert.AreEqual(2, result);
+        }
         
         
         [Test]
@@ -187,7 +251,22 @@ namespace GoGameTests
             Assert.AreEqual(StoneColor.White, result);
         }
 
-        //TODO: remove assumption that removes stones only if they are surrounded in white
+        [Test]
+        public void GetWhitePoints_NotCornerCellWonForWhite_1andHalf()
+        {
+            Board board = MakeBoard();
+            
+                                                   board.AddStone(StoneColor.White, 3, 1);
+            board.AddStone(StoneColor.White, 2, 2); /* WHITE TERRITORY*/                   board.AddStone(StoneColor.White, 4, 2);
+                                                   board.AddStone(StoneColor.White, 3, 3);
+
+                                                   board.AddStone(StoneColor.Black, 3, 4);
+
+            var result = board.GetWhitePoints();
+
+            Assert.AreEqual(1.5, result);
+        }
+
 
         
         [Test]
@@ -203,8 +282,90 @@ namespace GoGameTests
             Assert.AreEqual(StoneColor.White, result);
         }
 
-        // TODO: remove assumption that when no one own any territories, that the last player wins. The player that wins is White because of Komi.
-        // TODO: remove assumption that first surrounded territory found by the for loop is the winner.
+        [Test]
+        public void DetermineWinner_BlackDoesntOwnAnyCellButPlayedLast_WhiteShouldWinByKomi()
+        {
+            Board board = MakeBoard();
+
+            board.AddStone(StoneColor.White, 3, 4);
+            board.AddStone(StoneColor.Black, 3, 1);
+
+            StoneColor result = board.GetWinner();
+
+            Assert.AreEqual(StoneColor.White, result);
+        }
+
+        [Test]
+        public void DetermineWinner_WhiteOwn2CellsWhileBlackOwns1_WhiteWins()
+        {
+            Board board = MakeBoard();
+
+                                                    board.AddStone(StoneColor.Black, 3, 1);
+            board.AddStone(StoneColor.Black, 2, 2); /* BLACK TERRITORY*/                   board.AddStone(StoneColor.Black, 4, 2);
+                                                    board.AddStone(StoneColor.Black, 3, 3);
+                                                    board.AddStone(StoneColor.White, 3, 4);
+            board.AddStone(StoneColor.White, 2, 5); /* WHITE TERRITORY*/                   board.AddStone(StoneColor.White, 4, 5);
+                                                    board.AddStone(StoneColor.White, 3, 6);
+                                                    board.AddStone(StoneColor.White, 3, 7);
+            board.AddStone(StoneColor.White, 2, 8); /* WHITE TERRITORY*/                   board.AddStone(StoneColor.White, 4, 8);
+                                                    board.AddStone(StoneColor.White, 3, 9);
+
+            StoneColor result = board.GetWinner();
+
+            Assert.AreEqual(StoneColor.White, result);
+        }
+
+        
+        // FORK: Either start fixing todos
+        // TODO: remove assumption that removes stones only if they are surrounded in white
+        // TODO: Recognize group with 2 empty positions next to each other
+        // TODO: remove assumption in IsFullySurroundedBy that all the positions it checks are filled
+        // TODO: remove assumption that white does not lose a point when it loses a stone
+
+        // Test inheritly talks about points... so should write points test first
+        [Test]
+        public void DetermineWinner_BlackOwns2CellsButLoses1StoneToWhiteAndWhiteOwns1Cell_WhiteWinsByKomi()
+        {
+            Board board = MakeBoard();
+
+                                                    board.AddStone(StoneColor.Black, 3, 1);
+            board.AddStone(StoneColor.Black, 2, 2); /* BLACK TERRITORY*/                   board.AddStone(StoneColor.Black, 4, 2);
+                                                    board.AddStone(StoneColor.Black, 3, 3);
+                                                    board.AddStone(StoneColor.Black, 3, 4);
+            board.AddStone(StoneColor.Black, 2, 5); /* BLACK TERRITORY*/                   board.AddStone(StoneColor.Black, 4, 5);
+                                                    board.AddStone(StoneColor.Black, 3, 6);
+                                                    board.AddStone(StoneColor.Black, 3, 7);
+            board.AddStone(StoneColor.Black, 2, 8); board.AddStone(StoneColor.White, 3, 8); board.AddStone(StoneColor.Black, 4, 8);
+            board.AddStone(StoneColor.White, 2, 9); board.AddStone(StoneColor.Black, 3, 9); board.AddStone(StoneColor.White, 4, 9);
+                                                    board.AddStone(StoneColor.White, 3, 10);
+
+            StoneColor result = board.GetWinner();
+
+            Assert.AreEqual(StoneColor.White, result);
+        }
+
+        [Test]
+        public void GetBlackPoints_BlackOwns2CellsButLoses1StoneToWhite_1()
+        {
+            Board board = MakeBoard();
+        
+                                                    board.AddStone(StoneColor.Black, 3, 1);
+            board.AddStone(StoneColor.Black, 2, 2); /* BLACK TERRITORY*/                   board.AddStone(StoneColor.Black, 4, 2);
+                                                    board.AddStone(StoneColor.Black, 3, 3);
+                                                    board.AddStone(StoneColor.Black, 3, 4);
+            board.AddStone(StoneColor.Black, 2, 5); /* BLACK TERRITORY*/                   board.AddStone(StoneColor.Black, 4, 5);
+                                                    board.AddStone(StoneColor.Black, 3, 6);
+                                                    board.AddStone(StoneColor.Black, 3, 7);
+            board.AddStone(StoneColor.Black, 2, 8); /* TO BE FILLED BY WHITE */             board.AddStone(StoneColor.Black, 4, 8);
+            board.AddStone(StoneColor.White, 2, 9); board.AddStone(StoneColor.Black, 3, 9); board.AddStone(StoneColor.White, 4, 9);
+                                                    board.AddStone(StoneColor.White, 3, 10);
+            
+            board.AddStone(StoneColor.White, 3, 8);
+
+            var result = board.GetBlackPoints();
+        
+            Assert.AreEqual(1, result);
+        }
 
     }
 

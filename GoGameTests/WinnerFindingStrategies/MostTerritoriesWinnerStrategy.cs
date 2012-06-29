@@ -1,8 +1,8 @@
 namespace GoGameTests
 {
-    public class FirstCellWinnerStrategy : WinnerFindingStrategy
+    public class MostTerritoriesWinnerStrategy : WinnerFindingStrategy
     {
-        public FirstCellWinnerStrategy(Board b) : base(b)
+        public MostTerritoriesWinnerStrategy(Board b) : base(b)
         {
         }
 
@@ -20,24 +20,30 @@ namespace GoGameTests
 
         public override StoneColor GetWinner()
         {
+            int whiteTerritories = 0;
+            int blackTerritories = 0;
 
-            StoneColor color = StoneColor.Empty;
             for (int i = 1; i < Board.BOARDSIZE; i++)
             {
                 for (int j = 1; j < Board.BOARDSIZE; j++)
                 {
                     if (IsFullySurroundedBy(i, j, StoneColor.White))
                     {
-                        color = StoneColor.White;
+                        whiteTerritories++;
                     }
 
                     if (IsFullySurroundedBy(i, j, StoneColor.Black))
                     {
-                        color =  StoneColor.Black;
+                        blackTerritories++;
                     }
                 }
             }
-            return color;
+
+            if(whiteTerritories == blackTerritories)
+                return StoneColor.Empty;
+            if (whiteTerritories > blackTerritories)
+                return StoneColor.White;
+            return StoneColor.Black;
         }
     }
 }

@@ -33,12 +33,16 @@ namespace GoGameTests
 
         public StoneColor GetWinner()
         {
-            var result = new FirstCellWinnerStrategy(Board).GetWinner();
-            if (result!= StoneColor.Empty)
-            {
-                return result;
-            }
-            return new KomiWinnerStrategy(Board).GetWinner();
+            double whitePoints = Board.GetWhitePoints();
+            double blackPoints = Board.GetBlackPoints();
+
+            if (whitePoints == blackPoints)
+                return StoneColor.Empty;
+
+            if (whitePoints > blackPoints)
+                return StoneColor.White;
+
+            return StoneColor.Black;
         }
 
 
@@ -49,7 +53,6 @@ namespace GoGameTests
 
     public class Board
     {
-        private PositionStatus[,] positionStatusMatrix = new PositionStatus[BOARDSIZE,BOARDSIZE];
         private StoneColor[,] stoneColorMatrix = new StoneColor[BOARDSIZE, BOARDSIZE];
 
         public Board()
@@ -59,29 +62,31 @@ namespace GoGameTests
         }
 
         public const int BOARDSIZE = 19;
+        private const double KOMI = 0.5;
 
         public PositionStatus GetPositionStatus(int x, int y)
         {
-            return positionStatusMatrix[x, y];
+            return stoneColorMatrix[x, y] == StoneColor.Empty ? PositionStatus.EmptyPosition : PositionStatus.FilledPosition;
         }
 
         public void AddStone(StoneColor stoneColor, int x, int y)
         {
             rules.NotifyStoneAdded(stoneColor, x, y);
 
-            positionStatusMatrix[x, y] = PositionStatus.FilledPosition;
             stoneColorMatrix[x, y] = stoneColor;
 
             rules.CheckStonesAroundPositionAndRemoveIfNeeded(x, y);
         }
+
+        
 
         public void RemoveStoneIfSurrounded(int x, int y)
         {
             var fullySurrounded = rules.IsFullySurroundedBy(x, y, StoneColor.White);
             if ( fullySurrounded)
             {
-                positionStatusMatrix[x, y] = PositionStatus.EmptyPosition;
-                
+                stoneColorMatrix[x, y] = StoneColor.Empty;
+                blackStonesRemoved++;
             }
         }
 
@@ -91,10 +96,39 @@ namespace GoGameTests
         }
 
         private Rules rules;
+        private int blackStonesRemoved = 0;
 
         public StoneColor GetWinner()
         {
             return rules.GetWinner();
+        }
+
+        public double GetWhitePoints()
+        {
+            var whiteTerritories = GetTerritoriesForStoneColor(StoneColor.White);
+            return whiteTerritories + KOMI;
+        }
+
+        private double GetTerritoriesForStoneColor(StoneColor color)
+        {
+            double whiteTerritories = 0;
+            for (int i = 1; i < Board.BOARDSIZE; i++)
+            {
+                for (int j = 1; j < Board.BOARDSIZE; j++)
+                {
+                    if (rules.IsFullySurroundedBy(i, j, color))
+                    {
+                        whiteTerritories++;
+                    }
+                }
+            }
+            return whiteTerritories;
+        }
+
+        public double GetBlackPoints()
+        {
+            var blackTerritories = GetTerritoriesForStoneColor(StoneColor.Black);
+            return blackTerritories - blackStonesRemoved;
         }
     }
 }

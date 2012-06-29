@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Board.cs" />
-    <Compile Include="WinnerFindingStrategies\FirstCellWinnerStrategy.cs" />
+    <Compile Include="WinnerFindingStrategies\MostTerritoriesWinnerStrategy.cs" />
     <Compile Include="FullGameTests.cs" />
     <Compile Include="WinnerFindingStrategies\KomiWinnerStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
