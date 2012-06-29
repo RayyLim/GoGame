@@ -13,3 +13,6 @@
 
 # Hidden doc files
 ~$*
+
+# Resharper files
+_ReSharper*/
