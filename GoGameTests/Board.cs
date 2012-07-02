@@ -14,6 +14,7 @@ namespace GoGameTests
 
 
             bool fullySurrounded = surroundedOnLeft && surroundedOnRight && surroundedOnTop && surroundedOnBottom;
+          
             return fullySurrounded;
         }
         
