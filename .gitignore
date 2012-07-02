@@ -16,3 +16,7 @@
 
 # Resharper files
 _ReSharper*/
+
+#ncrunch files
+*.ncrunchsolution
+*.ncrunchproject

@@ -67,7 +67,7 @@ namespace GoGameTests
             Assert.AreEqual(PositionStatus.EmptyPosition, status);
         }
 
-        //what happens when you're out of board position? 
+        //TODO: what happens when you're out of board position? 
 
         [Test]
         public void AddStone_SurroundOppositeColorStone_RemoveOppositeColorStone()
@@ -306,17 +306,17 @@ namespace GoGameTests
             Board board = MakeBoard();
 
             FillBoard(board, @"
- 123456789
-1 W  B  B
-2W WB BB B
-3 W  B  B
-4
-5
-6
-7
-8
-9
-");
+                                 123456789
+                                1 W  B  B
+                                2W WB BB B
+                                3 W  B  B
+                                4
+                                5
+                                6
+                                7
+                                8
+                                9
+                                ");
             StoneColor result = board.GetWinner();
 
             Assert.AreEqual(StoneColor.Black, result);
@@ -329,17 +329,17 @@ namespace GoGameTests
 
 
             FillBoard(board, @"
- 123456789
-1 B  W  W
-2B BW WW W
-3 B  W  W
-4
-5
-6
-7
-8
-9
-");
+                                 123456789
+                                1 B  W  W
+                                2B BW WW W
+                                3 B  W  W
+                                4
+                                5
+                                6
+                                7
+                                8
+                                9
+                                ");
 
 
             StoneColor result = board.GetWinner();
