@@ -2,6 +2,10 @@ namespace GoGameTests
 {
     class Rules
     {
+        public StoneColor GetOppositeColor(int x, int y)
+        {
+            return Board.GetStoneColor(x, y) == StoneColor.White ? StoneColor.Black : StoneColor.White;
+        }
         public const int EDGE = 2;
 
         public Board Board { get; set; }
@@ -46,6 +50,24 @@ namespace GoGameTests
         public void NotifyStoneAdded(StoneColor stoneColor, int x, int y)
         {
         }
+
+        public bool IsAlmostFullySurrounded(int x, int y, StoneColor surroundingStoneColor)
+        {
+            if (Board.GetStoneColor(x,y)==StoneColor.Empty)
+            {
+                return false;
+            }
+            bool surroundedOnLeft = (x < EDGE || Board.GetStoneColor(x - 1, y) == surroundingStoneColor);
+            bool surroundedOnRight = (x > Board.BOARDSIZE - EDGE || Board.GetStoneColor(x + 1, y) == Board.GetStoneColor(x,y));
+            bool surroundedOnBottom = (y > Board.BOARDSIZE - EDGE || Board.GetStoneColor(x, y + 1) == surroundingStoneColor);
+            bool surroundedOnTop = (y < EDGE || Board.GetStoneColor(x, y - 1) == surroundingStoneColor);
+
+
+            bool fullySurrounded = surroundedOnLeft && surroundedOnRight && surroundedOnTop && surroundedOnBottom;
+
+            return fullySurrounded;
+            
+        }
     }
 
     public class Board
@@ -78,14 +100,26 @@ namespace GoGameTests
 
         public void RemoveStoneIfSurrounded(int x, int y)
         {
-            var fullySurrounded = rules.IsFullySurroundedBy(x, y, StoneColor.White) || rules.IsFullySurroundedBy(x, y, StoneColor.Black);
-            if ( fullySurrounded)
+            StoneColor oppositeColor = rules.GetOppositeColor(x, y);
+
+            bool fullySurrounded = rules.IsFullySurroundedBy(x, y, oppositeColor);
+            if (fullySurrounded)
             {
                 positionStatusMatrix[x, y] = PositionStatus.EmptyPosition;
-                
-            }
+            } 
+            
+            bool almostSurrounded = rules.IsAlmostFullySurrounded(x, y, oppositeColor);
+            if (almostSurrounded)
+            {
+                positionStatusMatrix[x, y] = PositionStatus.EmptyPosition;
+                positionStatusMatrix[x + 1, y] = PositionStatus.EmptyPosition;
+            } 
+            
+            
             
         }
+
+       
 
         public StoneColor GetStoneColor(int x, int y)
         {

@@ -102,31 +102,31 @@ namespace GoGameTests
             Assert.AreEqual(expectedSurroundedPositionStatus, status);
         }
         
-//        [Test]
-//        public void AddStone_Surround2OppositeColorStones_RemoveOppositeColorStone()
-//        {
-//            Board board = MakeBoard();
-//
-//            FillBoard(board, @"
-//                                 123456789
-//                                1 WW
-//                                2WBBW 
-//                                3 WW
-//                                4
-//                                5
-//                                6
-//                                7
-//                                8
-//                                9
-//                                ");
-//
-//
-//            PositionStatus status1 = board.GetPositionStatus(2, 2);
-//            PositionStatus status2 = board.GetPositionStatus(2, 2);
-//
-//            Assert.AreEqual(PositionStatus.EmptyPosition, status1);
-//            Assert.AreEqual(PositionStatus.EmptyPosition, status2);
-//        }
+        [Test]
+        public void AddStone_Surround2OppositeColorStones_RemoveOppositeColorStone()
+        {
+            Board board = MakeBoard();
+
+            FillBoard(board, @"
+                                 123456789
+                                1 WW
+                                2WBBW 
+                                3 WW
+                                4
+                                5
+                                6
+                                7
+                                8
+                                9
+                                ");
+
+
+            PositionStatus status1 = board.GetPositionStatus(2, 2);
+            PositionStatus status2 = board.GetPositionStatus(2, 2);
+
+            Assert.AreEqual(PositionStatus.EmptyPosition, status1);
+            Assert.AreEqual(PositionStatus.EmptyPosition, status2);
+        }
         
         [Test]
         public void AddStone_SurroundOppositeColorStone_RemoveOppositeColorStone2()
