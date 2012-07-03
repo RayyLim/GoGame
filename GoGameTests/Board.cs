@@ -34,7 +34,7 @@ namespace GoGameTests
 
         public StoneColor GetWinner()
         {
-            var result = new FirstCellWinnerStrategy(Board).GetWinner();
+            var result = new WinnerByCountStrategy(Board).GetWinner();
             if (result!= StoneColor.Empty)
             {
                 return result;
@@ -78,12 +78,13 @@ namespace GoGameTests
 
         public void RemoveStoneIfSurrounded(int x, int y)
         {
-            var fullySurrounded = rules.IsFullySurroundedBy(x, y, StoneColor.White);
+            var fullySurrounded = rules.IsFullySurroundedBy(x, y, StoneColor.White) || rules.IsFullySurroundedBy(x, y, StoneColor.Black);
             if ( fullySurrounded)
             {
                 positionStatusMatrix[x, y] = PositionStatus.EmptyPosition;
                 
             }
+            
         }
 
         public StoneColor GetStoneColor(int x, int y)

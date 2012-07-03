@@ -69,29 +69,64 @@ namespace GoGameTests
 
         //TODO: what happens when you're out of board position? 
 
-        [Test]
-        public void AddStone_SurroundOppositeColorStone_RemoveOppositeColorStone()
+        [TestCase(PositionStatus.FilledPosition, 
+                   @" 123456789
+                    1 W
+                    2WWW 
+                    3 W
+                    9
+                    ")]
+        [TestCase(PositionStatus.EmptyPosition, 
+                   @" 123456789
+                    1 W
+                    2WBW 
+                    3 W
+                    9
+                    ")]
+        [TestCase(PositionStatus.EmptyPosition, 
+                   @" 123456789
+                    1 B
+                    2BWB 
+                    3 B
+                    9
+                    ")]
+        public void AddStone_SurroundOppositeColorStone_RemoveOppositeColorStone(PositionStatus expectedSurroundedPositionStatus,string boardMap)
         {
             Board board = MakeBoard();
 
-            FillBoard(board, @"
-                                 123456789
-                                1 W
-                                2WBW 
-                                3 W
-                                4
-                                5
-                                6
-                                7
-                                8
-                                9
-                                ");
+            FillBoard(board, boardMap);
 
 
             PositionStatus status = board.GetPositionStatus(2, 2);
 
-            Assert.AreEqual(PositionStatus.EmptyPosition, status);
+            Assert.AreEqual(expectedSurroundedPositionStatus, status);
         }
+        
+//        [Test]
+//        public void AddStone_Surround2OppositeColorStones_RemoveOppositeColorStone()
+//        {
+//            Board board = MakeBoard();
+//
+//            FillBoard(board, @"
+//                                 123456789
+//                                1 WW
+//                                2WBBW 
+//                                3 WW
+//                                4
+//                                5
+//                                6
+//                                7
+//                                8
+//                                9
+//                                ");
+//
+//
+//            PositionStatus status1 = board.GetPositionStatus(2, 2);
+//            PositionStatus status2 = board.GetPositionStatus(2, 2);
+//
+//            Assert.AreEqual(PositionStatus.EmptyPosition, status1);
+//            Assert.AreEqual(PositionStatus.EmptyPosition, status2);
+//        }
         
         [Test]
         public void AddStone_SurroundOppositeColorStone_RemoveOppositeColorStone2()
@@ -252,7 +287,26 @@ namespace GoGameTests
             StoneColor result = board.GetWinner();
 
             Assert.AreEqual(StoneColor.Black, result);
-        }
+        }        
+        
+//        [Test]
+//        public void DetermineWinner_1BlackChainSurrounds2Cells_BlackWins()
+//        {
+//            Board board = MakeBoard();
+//
+//            FillBoard(board, @"
+//                                 12345
+//                                1  BB
+//                                2 B  B
+//                                3  BB
+//                                4  W
+//                                5
+//                                ");
+//
+//            StoneColor result = board.GetWinner();
+//
+//            Assert.AreEqual(StoneColor.Black, result);
+//        }
         
         
         [Test]
@@ -275,7 +329,6 @@ namespace GoGameTests
             Assert.AreEqual(StoneColor.White, result);
         }
 
-        //TODO: remove assumption that removes stones only if they are surrounded in white
 
         
         [Test]
@@ -297,8 +350,6 @@ namespace GoGameTests
             Assert.AreEqual(StoneColor.White, result);
         }
 
-        // TODO: remove assumption that when no one own any territories, that the last player wins. The player that wins is White because of Komi.
-        // TODO: remove assumption that first surrounded territory found by the for loop is the winner.
 
         [Test]
         public void DetermineWinner_BlackOwns2CellsWhiteOwns1Cell_BlackWins()
@@ -306,16 +357,12 @@ namespace GoGameTests
             Board board = MakeBoard();
 
             FillBoard(board, @"
-                                 123456789
-                                1 W  B  B
-                                2W WB BB B
-                                3 W  B  B
+                                 1234567890
+                                1  W  B  B
+                                2 W WB BB B
+                                3  W  B  B
                                 4
                                 5
-                                6
-                                7
-                                8
-                                9
                                 ");
             StoneColor result = board.GetWinner();
 
@@ -347,11 +394,36 @@ namespace GoGameTests
             Assert.AreEqual(StoneColor.White, result);
         }
 
+        
+        [Test]
+        public void DetermineWinner_BlackOwns1CellWhiteOwns2CellsBlackGoesLast_WhiteStillWins()
+        {
+            Board board = MakeBoard();
+
+
+            FillBoard(board, @"
+                                 123456789
+                                1 W  W  B
+                                2W WW WB B
+                                3 W  W  B
+                                4
+                                5
+                                6
+                                7
+                                8
+                                9
+                                ");
+
+
+            StoneColor result = board.GetWinner();
+
+            Assert.AreEqual(StoneColor.White, result);
+        }
+
         private void FillBoard(Board board, string stoneMap)
         {
             stoneMap = stoneMap.Trim();
-
-            var lines = stoneMap.Split('\r');
+             var lines = stoneMap.Split('\n');
             for (int i = 1; i < lines.Length; i++)
             {
                 string line = lines[i].Trim();
