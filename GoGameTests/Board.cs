@@ -128,10 +128,20 @@ namespace GoGameTests
             
             bool almostSurrounded = rules.IsAlmostFullySurrounded(x, y, oppositeColor);
             bool almostSurroundedToTheRight = rules.IsAlmostFullySurrounded(x+1, y, oppositeColor);
+
             if (almostSurrounded && almostSurroundedToTheRight)
             {
                 positionStatusMatrix[x, y] = PositionStatus.EmptyPosition;
                 positionStatusMatrix[x + 1, y] = PositionStatus.EmptyPosition;
+            } 
+            
+
+            bool almostSurroundedToTheTop = rules.IsAlmostFullySurrounded(x, y-1, oppositeColor);
+
+            if (almostSurrounded && almostSurroundedToTheTop)
+            {
+                positionStatusMatrix[x, y] = PositionStatus.EmptyPosition;
+                positionStatusMatrix[x , y-1] = PositionStatus.EmptyPosition;
             } 
             
             
@@ -142,6 +152,8 @@ namespace GoGameTests
 
         public StoneColor GetStoneColor(int x, int y)
         {
+            if(y <1) return StoneColor.Empty;
+            // TODO: check for x boundary
             return stoneColorMatrix[x, y];
         }
 
