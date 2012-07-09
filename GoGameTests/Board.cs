@@ -25,6 +25,7 @@ namespace GoGameTests
        
         public void CheckStonesAroundPositionAndRemoveIfNeeded(int x, int y)
         {
+            Board.RemoveStoneIfSurrounded(x-1, y-1);
             Board.RemoveStoneIfSurrounded(x, y - 1);
             Board.RemoveStoneIfSurrounded(x, y + 1);
             Board.RemoveStoneIfSurrounded(x - 1, y);
