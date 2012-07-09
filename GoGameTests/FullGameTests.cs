@@ -109,9 +109,9 @@ namespace GoGameTests
 
             FillBoard(board, @"
                                  123456789
-                                1 WW
-                                2WBBW 
-                                3 WW
+                                1    WW
+                                2   WBBW 
+                                3    WW
                                 4
                                 5
                                 6
@@ -121,8 +121,60 @@ namespace GoGameTests
                                 ");
 
 
-            PositionStatus status1 = board.GetPositionStatus(2, 2);
-            PositionStatus status2 = board.GetPositionStatus(2, 2);
+            PositionStatus status1 = board.GetPositionStatus(5, 2);
+            PositionStatus status2 = board.GetPositionStatus(6, 2);
+
+            Assert.AreEqual(PositionStatus.EmptyPosition, status1);
+            Assert.AreEqual(PositionStatus.EmptyPosition, status2);
+        }
+    
+        [Test]
+        public void AddStone_Surround2OppositeColorStoneNOTNearTopEdges_RemoveOppositeColorStone()
+        {
+            Board board = MakeBoard();
+
+            FillBoard(board, @"
+                                 123456789
+                                1
+                                2  WW
+                                3 WBBW 
+                                4  WW
+                                5
+                                6
+                                7
+                                8
+                                9
+                                ");
+
+
+            PositionStatus status1 = board.GetPositionStatus(3, 3);
+            PositionStatus status2 = board.GetPositionStatus(4, 3);
+
+            Assert.AreEqual(PositionStatus.EmptyPosition, status1);
+            Assert.AreEqual(PositionStatus.EmptyPosition, status2);
+        }
+        
+        [Test]
+        public void AddStone_Surround2OppositeColorStoneNearLeftEdges_RemoveOppositeColorStone()
+        {
+            Board board = MakeBoard();
+
+            FillBoard(board, @"
+                                 123456789
+                                1
+                                2 WW
+                                3WBBW 
+                                4 WW
+                                5
+                                6
+                                7
+                                8
+                                9
+                                ");
+
+
+            PositionStatus status1 = board.GetPositionStatus(2, 3);
+            PositionStatus status2 = board.GetPositionStatus(3, 3);
 
             Assert.AreEqual(PositionStatus.EmptyPosition, status1);
             Assert.AreEqual(PositionStatus.EmptyPosition, status2);
@@ -439,7 +491,7 @@ namespace GoGameTests
                             color = StoneColor.White;
                         }
 
-                        board.AddStone(color, i, j);
+                        board.AddStone(color, j, i);
                     }
                 }
             }
