@@ -178,7 +178,58 @@ namespace GoGameTests
 
             Assert.AreEqual(PositionStatus.EmptyPosition, status1);
             Assert.AreEqual(PositionStatus.EmptyPosition, status2);
-        }
+        }             
+        
+        [Test]
+        public void AddStone_2OppositeColorNotSurrounded_OppositeColorStoneNotRemoved()
+        {
+            Board board = MakeBoard();
+
+            FillBoard(board, @"
+                                 123456789
+                                1
+                                2 WW
+                                3WBBW 
+                                4 W
+                                5
+                                6
+                                7
+                                8
+                                9
+                                ");
+
+
+            PositionStatus status1 = board.GetPositionStatus(2, 3);
+            PositionStatus status2 = board.GetPositionStatus(3, 3);
+
+            Assert.AreEqual(PositionStatus.FilledPosition, status1);
+            Assert.AreEqual(PositionStatus.FilledPosition, status2);
+        }        
+        
+//        [Test]
+//        public void AddStone_Surround2OppositeColorStoneVertical_RemoveOppositeColorStone()
+//        {
+//            Board board = MakeBoard();
+//
+//            FillBoard(board, @"
+//                                 123456789
+//                                1
+//                                2 W
+//                                3WBW 
+//                                4WBW
+//                                5 W
+//                                6
+//                                8
+//                                9
+//                                ");
+//
+//
+//            PositionStatus status1 = board.GetPositionStatus(2, 3);
+//            PositionStatus status2 = board.GetPositionStatus(2, 4);
+//
+//            Assert.AreEqual(PositionStatus.EmptyPosition, status1);
+//            Assert.AreEqual(PositionStatus.EmptyPosition, status2);
+//        }
         
         [Test]
         public void AddStone_SurroundOppositeColorStone_RemoveOppositeColorStone2()

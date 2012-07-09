@@ -58,12 +58,29 @@ namespace GoGameTests
                 return false;
             }
             bool surroundedOnLeft = (x < EDGE || Board.GetStoneColor(x - 1, y) == surroundingStoneColor);
-            bool surroundedOnRight = (x > Board.BOARDSIZE - EDGE || Board.GetStoneColor(x + 1, y) == Board.GetStoneColor(x,y));
+            bool surroundedOnRight = (x > Board.BOARDSIZE - EDGE || Board.GetStoneColor(x + 1, y) == surroundingStoneColor);
             bool surroundedOnBottom = (y > Board.BOARDSIZE - EDGE || Board.GetStoneColor(x, y + 1) == surroundingStoneColor);
             bool surroundedOnTop = (y < EDGE || Board.GetStoneColor(x, y - 1) == surroundingStoneColor);
 
+            int surroundedEdges = 0;
+            if (surroundedOnTop)  surroundedEdges++;
+            if (surroundedOnRight)  surroundedEdges++;
+            if (surroundedOnLeft)  surroundedEdges++;
+            if (surroundedOnBottom)  surroundedEdges++;
+            
+            
+            bool surroundedOnLeftSameColor = (x < EDGE || Board.GetStoneColor(x - 1, y) == Board.GetStoneColor(x,y));
+            bool surroundedOnRightSameColor = (x > Board.BOARDSIZE - EDGE || Board.GetStoneColor(x + 1, y) == Board.GetStoneColor(x, y));
+            bool surroundedOnBottomSameColor = (y > Board.BOARDSIZE - EDGE || Board.GetStoneColor(x, y + 1) == Board.GetStoneColor(x, y));
+            bool surroundedOnTopSameColor = (y < EDGE || Board.GetStoneColor(x, y - 1) == Board.GetStoneColor(x, y));
 
-            bool fullySurrounded = surroundedOnLeft && surroundedOnRight && surroundedOnTop && surroundedOnBottom;
+            int surroundedEdgesSameColor = 0;
+            if (surroundedOnTopSameColor) surroundedEdgesSameColor++;
+            if (surroundedOnRightSameColor) surroundedEdgesSameColor++;
+            if (surroundedOnLeftSameColor) surroundedEdgesSameColor++;
+            if (surroundedOnBottomSameColor) surroundedEdgesSameColor++;
+
+            bool fullySurrounded = surroundedEdges == 3 && surroundedEdgesSameColor == 1;
 
             return fullySurrounded;
             
@@ -109,7 +126,8 @@ namespace GoGameTests
             } 
             
             bool almostSurrounded = rules.IsAlmostFullySurrounded(x, y, oppositeColor);
-            if (almostSurrounded)
+            bool almostSurroundedToTheRight = rules.IsAlmostFullySurrounded(x+1, y, oppositeColor);
+            if (almostSurrounded && almostSurroundedToTheRight)
             {
                 positionStatusMatrix[x, y] = PositionStatus.EmptyPosition;
                 positionStatusMatrix[x + 1, y] = PositionStatus.EmptyPosition;
