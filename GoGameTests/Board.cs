@@ -142,10 +142,7 @@ namespace GoGameTests
             {
                 positionStatusMatrix[x, y] = PositionStatus.EmptyPosition;
                 positionStatusMatrix[x , y-1] = PositionStatus.EmptyPosition;
-            } 
-            
-            
-            
+            }         
         }
 
        
