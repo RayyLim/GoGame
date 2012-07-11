@@ -20,3 +20,4 @@ _ReSharper*/
 #ncrunch files
 *.ncrunchsolution
 *.ncrunchproject
+*.crunchsolution.cache
