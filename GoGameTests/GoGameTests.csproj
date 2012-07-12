@@ -44,6 +44,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Board.cs" />
+    <Compile Include="ChainRemovableDetector.cs" />
+    <Compile Include="FullySurroundedRemovableDetector.cs" />
+    <Compile Include="RemovableDetector.cs" />
+    <Compile Include="RemovalArgs.cs" />
+    <Compile Include="Rules.cs" />
+    <Compile Include="StoneRemover.cs" />
     <Compile Include="WinnerFindingStrategies\WinnerByCountStrategy.cs" />
     <Compile Include="FullGameTests.cs" />
     <Compile Include="WinnerFindingStrategies\KomiWinnerStrategy.cs" />
