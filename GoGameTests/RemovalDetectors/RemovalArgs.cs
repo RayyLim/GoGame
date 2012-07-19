@@ -1,5 +1,7 @@
+using System;
 using GoGameTests;
 
+    [Serializable]
 public class RemovalArgs
 {
     public int X { get; set; }

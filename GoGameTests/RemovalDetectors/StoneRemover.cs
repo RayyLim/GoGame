@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using GoGameTests;
 
+    [Serializable]
 public class StoneRemover
 {
     private readonly RemovalArgs _args;
@@ -24,15 +26,18 @@ public class StoneRemover
 
         RemoveByFullySurroundedStrategy();
 
-        RemoveByChainOnRightSurroundedStrategy(x, y, oppositeColor);
+        RemoveByChainSurroundedStrategy();
 
     }
 
-    private void RemoveByChainOnRightSurroundedStrategy(int x, int y, StoneColor oppositeColor)
+    private void RemoveByChainSurroundedStrategy()
     {
         RemovableDetector detector = new ChainRemovableDetector();
         List<Tuple<int, int>> results = detector.Detect(_args);
-
+        if (results.Count>3)
+        {
+            Debugger.Break();
+        }
         RemoveAllItemsInList(results);
     }
 

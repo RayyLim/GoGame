@@ -1,11 +1,13 @@
+using System;
 using System.Linq;
 
 namespace GoGameTests
 {
+    [Serializable]
     public class Board
     {
-        private PositionStatus[,] positionStatusMatrix = new PositionStatus[BOARDSIZE, BOARDSIZE];
-        private StoneColor[,] stoneColorMatrix = new StoneColor[BOARDSIZE, BOARDSIZE];
+        private PositionStatus[,] positionStatusMatrix = new PositionStatus[BOARDSIZE+1, BOARDSIZE+1];
+        private StoneColor[,] stoneColorMatrix = new StoneColor[BOARDSIZE+1, BOARDSIZE+1];
 
         public Board()
         {

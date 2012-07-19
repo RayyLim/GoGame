@@ -5,12 +5,13 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{C4722A61-C238-4243-9636-2D3023069694}</ProjectGuid>
+    <ProjectGuid>{215D5D53-C94C-471D-84AD-F53BA1A56711}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GoGameTests</RootNamespace>
-    <AssemblyName>GoGameTests</AssemblyName>
+    <RootNamespace>GoDebuggerVisualizers</RootNamespace>
+    <AssemblyName>GoDebuggerVisualizers</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -32,37 +33,48 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="nunit.framework, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Board.cs" />
-    <Compile Include="RemovalDetectors\ChainRemovableDetector.cs" />
-    <Compile Include="RemovalDetectors\FullySurroundedRemovableDetector.cs" />
-    <Compile Include="RemovalDetectors\RemovableDetector.cs" />
-    <Compile Include="RemovalDetectors\RemovalArgs.cs" />
-    <Compile Include="Rules.cs" />
-    <Compile Include="RemovalDetectors\StoneRemover.cs" />
-    <Compile Include="WinnerFindingStrategies\WinnerByCountStrategy.cs" />
-    <Compile Include="FullGameTests.cs" />
-    <Compile Include="WinnerFindingStrategies\KomiWinnerStrategy.cs" />
+    <Compile Include="BoardDebuggerVisualizers.cs" />
+    <Compile Include="GoBoardForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GoBoardForm.Designer.cs">
+      <DependentUpon>GoBoardForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl1.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControl1.Designer.cs">
+      <DependentUpon>UserControl1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WinnerFindingStrategies\WinnerFindingStrategy.cs" />
+    <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\GoGameTests\GoGameTests.csproj">
+      <Project>{C4722A61-C238-4243-9636-2D3023069694}</Project>
+      <Name>GoGameTests</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="GoBoardForm.resx">
+      <DependentUpon>GoBoardForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "C:\DevProjects\RoyOsherove\GoGame\src\GoGameTests\GoDebuggerVisualizers\bin\Debug\*.dll" "C:\Users\Ray\Documents\Visual Studio 2010\Visualizers"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
