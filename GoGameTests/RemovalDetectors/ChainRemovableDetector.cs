@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GoGameTests;
 
+    [Serializable]
 internal class ChainRemovableDetector : RemovableDetector
 {
     private RemovalArgs _args;
@@ -32,6 +34,20 @@ internal class ChainRemovableDetector : RemovableDetector
                                     results.Add(new Tuple<int, int>(x, y));
                                     results.Add(new Tuple<int, int>(xNextTome, yNextTome));
 
+                                }
+                                IEnumerable<Tuple<int, int>> toCheckChain = GetCheckPointsFor(xNextTome, yNextTome).Where(tuple => args.Board.GetStoneColor(tuple.Item1, tuple.Item2) == args.Board.GetStoneColor(x,y));
+                                foreach (var chainTuple in toCheckChain)
+                                {
+                                    int xNextTomeChained = chainTuple.Item1;
+                                    int yNextTomeChained = chainTuple.Item2;
+
+                                    bool AlmostSurroundedToSomePositionChain = IsAlmostFullySurrounded(xNextTomeChained, yNextTomeChained, oppositeColor);
+
+                                    if (AlmostSurroundedToSomePositionChain)
+                                    {
+                                        results.Add(new Tuple<int, int>(xNextTomeChained, yNextTomeChained));
+
+                                    }
                                 }
 
                             });
@@ -72,9 +88,9 @@ internal class ChainRemovableDetector : RemovableDetector
         if (surroundedOnLeftSameColor) surroundedEdgesSameColor++;
         if (surroundedOnBottomSameColor) surroundedEdgesSameColor++;
 
-        bool fullySurrounded = surroundedEdges == 3 && surroundedEdgesSameColor == 1;
+        bool isAlmostFullySurrounded = (surroundedEdges + surroundedEdgesSameColor) == 4  && surroundedEdgesSameColor>=1;
 
-        return fullySurrounded;
+        return isAlmostFullySurrounded;
 
     }
 

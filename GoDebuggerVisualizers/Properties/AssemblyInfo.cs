@@ -1,17 +1,17 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using GoGameTests;
-using Microsoft.VisualStudio.DebuggerVisualizers;
+using GoDebuggerVisualizers;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("GoGameTests")]
+[assembly: AssemblyTitle("GoDebuggerVisualizers")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("GoGameTests")]
+[assembly: AssemblyProduct("GoDebuggerVisualizers")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -22,13 +22,13 @@ using Microsoft.VisualStudio.DebuggerVisualizers;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("9d017e70-1387-4a73-b4d7-e3cca14b1ef9")]
+[assembly: Guid("78e30280-aa88-49c7-9e17-4a04049524fb")]
 
 // Version information for an assembly consists of the following four values:
 //
 //      Major Version
 //      Minor Version 
-//      Build NumberS
+//      Build Number
 //      Revision
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
@@ -37,3 +37,4 @@ using Microsoft.VisualStudio.DebuggerVisualizers;
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
+[assembly: DebuggerVisualizer(typeof(UserControl1))]

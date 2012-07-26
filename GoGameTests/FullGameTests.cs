@@ -283,6 +283,64 @@ namespace GoGameTests
         }
         
         [Test]
+        public void AddStone_Surround3OppositeColorStoneVertical_RemoveOppositeColorStone()
+        {
+            Board board = MakeBoard();
+
+            FillBoard(board, @"
+                                 123456789
+                                1
+                                2 W
+                                3WBW 
+                                4WBW
+                                5WBW
+                                6 W
+                                8
+                                9
+                                ");
+
+
+            PositionStatus status1 = board.GetPositionStatus(2, 3);
+            PositionStatus status2 = board.GetPositionStatus(2, 4);
+            PositionStatus status3 = board.GetPositionStatus(2, 5);
+
+            Assert.AreEqual(PositionStatus.EmptyPosition, status1);
+            Assert.AreEqual(PositionStatus.EmptyPosition, status2);
+            Assert.AreEqual(PositionStatus.EmptyPosition, status3);
+        }
+        
+        [Test]
+        public void AddStone_Surround3OppositeColorStoneVertical3_RemoveOppositeColorStone()
+        {
+            Board board = MakeBoard();
+
+            FillBoard(board, @"
+                                 123456789
+                                1
+                                2 
+                                3WBW 
+                                4WBW
+                                5WBW
+                                6 
+                                8
+                                9
+                                ");
+
+            board.AddStone(StoneColor.White, 2, 6);
+
+
+            PositionStatus status1 = board.GetPositionStatus(2, 3);
+            PositionStatus status2 = board.GetPositionStatus(2, 4);
+            PositionStatus status3 = board.GetPositionStatus(2, 5);
+
+            Assert.AreEqual(PositionStatus.FilledPosition, status1);
+            Assert.AreEqual(PositionStatus.FilledPosition, status2);
+            Assert.AreEqual(PositionStatus.FilledPosition, status3);
+        }
+
+
+        
+        [Test]
         public void AddStone_SurroundOppositeColorStone_RemoveOppositeColorStone2()
         {
             Board board = MakeBoard();

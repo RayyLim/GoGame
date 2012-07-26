@@ -1,5 +1,8 @@
+using System;
+
 namespace GoGameTests
 {
+        [Serializable]
     public class Rules
     {
         public StoneColor GetOppositeColor(int x, int y)
